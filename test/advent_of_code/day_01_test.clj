@@ -4,9 +4,9 @@
             [clojure.java.io :refer [resource]]))
 
 (deftest part1
-  (let [expected 1390]                                      ;; example = 7
+  (let [expected 7]
     (is (= expected (part-1 (slurp (resource "day-01.txt")))))))
 
 (deftest part2
-  (let [expected 1457]                                      ;; example = 5
+  (let [expected 5]
     (is (= expected (part-2 (slurp (resource "day-01.txt")))))))
