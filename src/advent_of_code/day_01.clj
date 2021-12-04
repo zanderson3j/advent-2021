@@ -7,14 +7,13 @@
 
 (defn- calculateSlidingWindowDepths [depths slidingWindowDepths]
     (cond
-      (< (count depths) 3) slidingWindowDepths
+      (< (count depths) 3) (reverse slidingWindowDepths)
       :else (conj (calculateSlidingWindowDepths (rest depths) slidingWindowDepths)
                   (+ (first depths) (second depths) (nth depths 2)))))
 
 (defn- slidingWindow [depths]
   (-> depths
-      (calculateSlidingWindowDepths [])
-      (reverse)))
+      (calculateSlidingWindowDepths [])))
 
 (defn- countOfIncreases [depths]
     (cond
