@@ -42,15 +42,15 @@
          rowsLeft (rest board)
          winner (set/subset? row (set numbersCalled))]
     (cond
-      (empty? rowsLeft) {:winner false}
       (true? winner) (let [setsOfRows (map #(set %) board)
                            setOfRows (reduce set/union setsOfRows)
-                           unmarkedSet (set/difference setOfRows numbersCalled)]
+                           unmarkedSet (set/difference setOfRows (set numbersCalled))]
                        {:winner true
                         :unmarked unmarkedSet
                         :row row
                         :last-number-called (last numbersCalled)
                         :count-of-numbers-called (count numbersCalled)})
+      (empty? rowsLeft) {:winner false}
       :else (let [nextRow (first rowsLeft)
                   remainingRow (rest rowsLeft)
                   winner (set/subset? nextRow (set numbersCalled))]
@@ -80,33 +80,15 @@
                           (map #(winner? nextCall %)))]
           (recur nextCall remainingNumbers scored))))))
 
-(defn- getLastToWin [game]
-  (let [numbersToCall (:numbersCalled game)
-        boards (:boards game)]
-    (loop [numbersCalling []
-           numbersLeft numbersToCall
-           winningBoards []
-           unscoredBoards boards]
-      (if (empty? numbersLeft)
-        winningBoards
-        (let [nextCall (conj numbersCalling (first numbersLeft))
-              remainingNumbers (rest numbersLeft)
-              scores (->> unscoredBoards
-                          (map #(winner? nextCall %)))
-              winners (filter #(true? (:winner %)) scores)
-              losers (filter #(false? (:winner %)) scores)]
-          (recur nextCall
-                 remainingNumbers
-                 (if (empty? winners) winningBoards (conj winningBoards winners))
-                 (map #(:board %) losers)))))))
-
 (defn part-1
   "Day 04 Part 1"
   [input]
   (as-> input $
         (str/split-lines $)
         (hash-map :numbersCalled (readNumbersCalled $) :boards (readBoards (drop 2 $)))
-        (getWinner $)
+        (map #(getWinner {:numbersCalled (:numbersCalled $) :boards [%]}) (:boards $))
+        (sort-by :count-of-numbers-called $)
+        (first $)
         (* (reduce + (:unmarked $)) (:last-number-called $))))
 
 (defn part-2
@@ -115,8 +97,7 @@
   (as-> input $
         (str/split-lines $)
         (hash-map :numbersCalled (readNumbersCalled $) :boards (readBoards (drop 2 $)))
-        (getLastToWin $)
-        (map #(nth % 0) $)
+        (map #(getWinner {:numbersCalled (:numbersCalled $) :boards [%]}) (:boards $))
         (sort-by :count-of-numbers-called $)
         (last $)
         (* (reduce + (:unmarked $)) (:last-number-called $))))
