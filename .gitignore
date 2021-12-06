@@ -12,3 +12,5 @@ pom.xml.asc
 .hg/
 .tool-versions
 /.clj-kondo
+/.idea
+/.lsp
