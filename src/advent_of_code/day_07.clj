@@ -7,11 +7,7 @@
 
 (defn- incrementedFuelMove [finalPosition startingPosition]
   (let [numberOfSteps (Math/abs (int (- startingPosition finalPosition)))]
-    (loop [step 1
-           sum 0]
-      (if (> step numberOfSteps)
-        sum
-        (recur (+ step 1) (+ sum step))))))
+    (/ (* numberOfSteps (inc numberOfSteps)) 2)))
 
 (defn- fuelUsageIncremented [positions maxPos]
   (loop [position maxPos
