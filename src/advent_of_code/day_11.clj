@@ -81,7 +81,7 @@
       flashesAndCounts
       (recur (flash flashesAndCounts) (inc day)))))
 
-(defn- firstSimulFlash [octopiAndCounts]
+(defn- firstSimultaneousFlash [octopiAndCounts]
   (loop [flashesAndCounts octopiAndCounts
          day 0]
     (if (= (->> (:octopi flashesAndCounts)
@@ -97,8 +97,6 @@
   (as-> input $
         (str/split-lines $)
         (map #(readNumbers %) $)
-        (map #(vec %) $)
-        (vec $)
         (hash-map :octopi $ :flashes 0)
         (simulateFlashes $ 100)
         (:flashes $)))
@@ -109,7 +107,5 @@
   (as-> input $
         (str/split-lines $)
         (map #(readNumbers %) $)
-        (map #(vec %) $)
-        (vec $)
         (hash-map :octopi $ :flashes 0)
-        (firstSimulFlash $)))
+        (firstSimultaneousFlash $)))
